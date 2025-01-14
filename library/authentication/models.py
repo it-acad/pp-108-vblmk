@@ -2,7 +2,30 @@ import datetime
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
-from datetime import datetime
+# from datetime import datetime
+from book.models import Book
+# from order.models import Order
+from author.models import Author
+
+# from librarian.models import Librarian
+
+class AuthorProxy(Author):
+    class Meta:
+        proxy = True
+        verbose_name = "Author Proxy"
+        verbose_name_plural = "Author Proxies"
+
+class BookProxy(Book):
+    class Meta:
+        proxy = True
+        verbose_name = "Book Proxy"
+        verbose_name_plural = "Book Proxies"
+
+# class OrderProxy(Order):
+#     class Meta:
+#         proxy = True
+#         verbose_name = "Order Proxy"
+#         verbose_name_plural = "Order Proxies"
 
 ROLE_CHOICES = (
     (0, 'visitor'),
@@ -70,7 +93,7 @@ class CustomUser(AbstractBaseUser):
     """
     first_name = models.CharField(max_length=20, default=None)
     last_name = models.CharField(max_length=20, default=None)
-    middle_name = models.CharField(max_length=20, default=None)
+    middle_name = models.CharField(max_length=20, default=None, blank=True, null=True)
     email = models.CharField(max_length=100, unique=True, default=None)
     password = models.CharField(default=None, max_length=255)
     created_at = models.DateTimeField(
@@ -79,8 +102,13 @@ class CustomUser(AbstractBaseUser):
     role = models.IntegerField(choices=ROLE_CHOICES, default=0)
     is_active = models.BooleanField(default=False)
     id = models.AutoField(primary_key=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    id = models.AutoField(primary_key=True)
 
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'middle_name']
+
     objects = CustomUserManager()
 
     @property
@@ -95,6 +123,18 @@ class CustomUser(AbstractBaseUser):
                  user role, user is_active
         """
         return f"'id': {self.id}, 'first_name': '{self.first_name}', 'middle_name': '{self.middle_name}', 'last_name': '{self.last_name}', 'email': '{self.email}', 'created_at': {int(self.created_at.timestamp())}, 'updated_at': {int(self.updated_at.timestamp())}, 'role': {self.role}, 'is_active': {self.is_active}"  # 'password': '{self.password}', \
+
+    def has_perm(self, perm, obj=None):
+        """
+        Does the user have a specific permission?
+        """
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        """
+        Does the user have permissions to view the app `app_label`?
+        """
+        return self.is_superuser
 
     def __repr__(self):
         """
