@@ -22,6 +22,7 @@ class Book(models.Model):
     count = models.IntegerField(default=10)
     authors = models.ManyToManyField(
         'author.Author', related_name='works')
+    year_of_publication = models.IntegerField(blank=True, null=True)
     id = models.AutoField(primary_key=True)
 
     def __str__(self):

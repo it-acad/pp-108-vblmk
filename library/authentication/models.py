@@ -4,7 +4,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 # from datetime import datetime
 from book.models import Book
-# from order.models import Order
+from order.models import Order
 from author.models import Author
 
 # from librarian.models import Librarian
@@ -12,20 +12,20 @@ from author.models import Author
 class AuthorProxy(Author):
     class Meta:
         proxy = True
-        verbose_name = "Author Proxy"
-        verbose_name_plural = "Author Proxies"
+        verbose_name = "Author"
+        verbose_name_plural = "Authors"
 
 class BookProxy(Book):
     class Meta:
         proxy = True
-        verbose_name = "Book Proxy"
-        verbose_name_plural = "Book Proxies"
+        verbose_name = "Book"
+        verbose_name_plural = "Books"
 
-# class OrderProxy(Order):
-#     class Meta:
-#         proxy = True
-#         verbose_name = "Order Proxy"
-#         verbose_name_plural = "Order Proxies"
+class OrderProxy(Order):
+    class Meta:
+        proxy = True
+        verbose_name = "Order Proxy"
+        verbose_name_plural = "Order Proxies"
 
 ROLE_CHOICES = (
     (0, 'visitor'),
